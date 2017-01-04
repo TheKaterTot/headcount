@@ -2,6 +2,6 @@ class District
 attr_reader :name
 
   def initialize(attributes)
-    @name = attributes[:name]
+    @name = attributes[:name].upcase
   end
 end
