@@ -1,0 +1,16 @@
+{
+  "Unit Tests": {
+    "coverage": {
+      "/Users/JSerrano/Turing1611/projects/headcount/headcount/lib/district.rb": [
+        1,
+        null,
+        1,
+        1,
+        0,
+        null,
+        null
+      ]
+    },
+    "timestamp": 1483553205
+  }
+}
