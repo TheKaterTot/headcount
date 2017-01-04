@@ -1,6 +1,6 @@
 require_relative "test_helper"
 require "./lib/district_repository"
-
+require 'pry'
 class District_Repo_Test < Minitest::Test
   def setup
     @dr = DistrictRepository.new
@@ -37,5 +37,15 @@ class District_Repo_Test < Minitest::Test
     district_1 = @dr.find_by_name("academy 20")
 
     assert_equal "ACADEMY 20", district_1.name
+  end
+
+  def test_finds_matches
+  @dr.load_data({
+      :enrollment => {
+        :kindergarten => "test/fixtures/kindergarten_sample.csv"
+      }
+      })
+  
+  assert_equal 2,  @dr.find_all_matching("bri").count
   end
 end
