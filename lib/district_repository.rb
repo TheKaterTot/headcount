@@ -1,6 +1,7 @@
 require "csv"
 require_relative "district"
 
+
 class DistrictRepository
 
   def initialize
@@ -30,5 +31,17 @@ class DistrictRepository
     name = name.upcase
     result = @attributes.fetch(name, nil)
     result[0]
+  end
+
+  def find_all_matching(fragment)
+    matches = []
+    fragment = fragment.upcase
+    @attributes.each do |district|
+      if  district[0].include?(fragment)
+      matches << district[0]
+#binding.pry
+      end
+    end
+    matches
   end
 end
