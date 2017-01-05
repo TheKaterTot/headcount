@@ -3,6 +3,7 @@ require_relative "district"
 
 
 class DistrictRepository
+  attr_reader :attributes
 
   def initialize
     @districts = {}
