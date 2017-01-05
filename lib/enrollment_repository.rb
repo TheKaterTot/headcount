@@ -2,7 +2,7 @@ require 'csv'
 require_relative 'enrollment'
 
 class EnrollmentRepository
-attr_reader :enrollments 
+attr_reader :enrollments
 
   def initialize
     @enrollments = {}
@@ -18,7 +18,7 @@ attr_reader :enrollments
       name = row[:location]
       year = row[:timeframe]
       data = row[:data]
-      @enrollments[name] = Enrollment.new({:name => name, 
+      @enrollments[name] = Enrollment.new({:name => name,
                                            :kindergarten_participation => {year => data}})
     end
     end
