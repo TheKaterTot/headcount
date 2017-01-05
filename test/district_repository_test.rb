@@ -11,6 +11,10 @@ class District_Repo_Test < Minitest::Test
     assert_equal DistrictRepository, @dr.class
   end
 
+  def test_attributes_is_empty
+    assert @dr.attributes.empty?
+  end
+
   def test_repo_loads_file
     contents = @dr.load_file("test/fixtures/kindergarten_sample.csv")
 
@@ -45,7 +49,7 @@ class District_Repo_Test < Minitest::Test
         :kindergarten => "test/fixtures/kindergarten_sample.csv"
       }
       })
-  
+
   assert_equal 2,  @dr.find_all_matching("bri").count
   end
 end
