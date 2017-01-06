@@ -4,7 +4,6 @@ require "./lib/enrollment_repository"
 class Enrollment_Repo_Test < Minitest::Test
   def setup
     @er = EnrollmentRepository.new
-    # @district = District.new(:name => "NOWHERE")
   end
 
   def test_district_repo_exists

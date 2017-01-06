@@ -8,7 +8,7 @@ class DistrictRepository
 
   def initialize
     @districts = {}
-    @enrollment = EnrollmentRepository.new
+    @er = EnrollmentRepository.new
   end
 
   def load_file(data)
@@ -16,13 +16,12 @@ class DistrictRepository
   end
 
   def load_data(district_data)
+    @er.load_data(district_data)
     contents = load_file(district_data[:enrollment][:kindergarten])
     contents.each do |row|
       name = row[:location]
-      @districts[name] = District.new({:name => name})
+      @districts[name] = District.new({:name => name, :enrollment => @er.find_by_name(name)})
     end
-    @enrollment.load_data(district_data)
-
   end
 
   def find_by_name(name)
@@ -33,4 +32,5 @@ class DistrictRepository
   def find_all_matching(fragment)
     @districts.select {|key, value| key.include?(fragment.upcase)}
   end
+
 end
