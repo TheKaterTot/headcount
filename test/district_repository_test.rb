@@ -12,7 +12,7 @@ class District_Repo_Test < Minitest::Test
   end
 
   def test_attributes_is_empty
-    assert @dr.attributes.empty?
+    assert @dr.districts.empty?
   end
 
   def test_repo_loads_file
@@ -52,4 +52,16 @@ class District_Repo_Test < Minitest::Test
 
   assert_equal 2,  @dr.find_all_matching("bri").count
   end
-end
+
+  def test_makes_enrollment_repo
+    @dr.load_data({
+        :enrollment => {
+          :kindergarten => "test/fixtures/kindergarten_sample.csv"
+        }
+        })
+
+  district = @dr.find_by_name("ACADEMY 20")
+
+  assert_equal 0.436, district.enrollment.kindergarten_participation_in_year(2010)
+  end
+ end
