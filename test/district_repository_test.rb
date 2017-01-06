@@ -1,6 +1,6 @@
 require_relative "test_helper"
 require "./lib/district_repository"
-require 'pry'
+
 class District_Repo_Test < Minitest::Test
   def setup
     @dr = DistrictRepository.new

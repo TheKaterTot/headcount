@@ -20,3 +20,11 @@ namespace :sanitation do
   desc "Check both line length and method length"
   task :all => [:lines, :methods]
 end
+
+mrspec = Proc.new do
+  sh 'mrspec'
+end
+
+task :test, &mrspec
+
+task :default => [:test, "sanitation:all"]
