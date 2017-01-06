@@ -1,6 +1,5 @@
 require_relative "test_helper"
 require "./lib/enrollment_repository"
-require 'pry'
 
 class Enrollment_Repo_Test < Minitest::Test
   def setup
@@ -13,14 +12,14 @@ class Enrollment_Repo_Test < Minitest::Test
   end
 
   def test_repo_loads_file
-  
+
     contents = @er.load_file("test/fixtures/kindergarten_sample.csv")
 
     assert contents.shift
   end
 
   def test_loads_data
-  
+
     @er.load_data({
       :enrollment => {
         :kindergarten => "test/fixtures/kindergarten_sample.csv"
