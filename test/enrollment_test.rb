@@ -27,17 +27,4 @@ class DistrictTest < Minitest::Test
     e = Enrollment.new({:name => "Academy 20", :kindergarten_participation => {"2010" => "0.1345", "2011" => "0.34567"}})
     assert_nil e.kindergarten_participation_in_year(2004)
   end
-
-  def test_truncates_float
-    e = Enrollment.new({:name => "Academy 20", :kindergarten_participation => {"2010" => "0.1345"}} )
-    assert_in_delta 0.134, e.truncates_float("0.1345"), 0.005
-  end
-
-
-
-  def test_sanitize
-    e = Enrollment.new({:name => "Academy 20", :kindergarten_participation => {"2010" => "0.1345"}} )
-
-    assert_equal({2010 => 0.134}, e.sanitize({:kindergarten_participation => {"2010" => "0.1345"}}))
-  end
 end

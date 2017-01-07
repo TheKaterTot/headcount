@@ -19,9 +19,6 @@ attr_reader :enrollments
       year = row[:timeframe]
       data = row[:data]
       creates_enrollments(name, year, data)
-      # # call method that creates enrollments
-      # @enrollments[name] = Enrollment.new({:name => name,
-      #                                      :kindergarten_participation => {year => data}})
     end
     end
 
@@ -30,12 +27,12 @@ attr_reader :enrollments
   end
 
   def creates_enrollments(name, year, data)
-    if !@enrollments.has_key?(name)
-      @enrollments[name] = Enrollment.new({:name => name,
+    if !@enrollments.has_key?(name.upcase)
+      @enrollments[name.upcase] = Enrollment.new({:name => name,
                                            :kindergarten_participation => {year => data}})
 
     else
-      @enrollments[name].add_yearly_data(year, data)
+      @enrollments[name.upcase].add_yearly_data(year, data)
 
     end
   end
