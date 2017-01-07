@@ -8,7 +8,8 @@ class HeadcountAnalystTest < Minitest::Test
     @dr = DistrictRepository.new
     @dr.load_data({
       :enrollment => {
-        :kindergarten => "./data/Kindergartners in full-day program.csv"
+        :kindergarten => "./data/Kindergartners in full-day program.csv",
+        :high_school_graduation => "./data/High school graduation rates.csv"
       }
       })
     @ha = HeadcountAnalyst.new(@dr)
@@ -30,9 +31,14 @@ class HeadcountAnalystTest < Minitest::Test
 
   def test_kindergarten_rate_variation_trend
     trends = @ha.kindergarten_participation_rate_variation_trend('ACADEMY 20', :against => 'COLORADO')
+
     assert_in_delta 1.257, trends[2004], 0.005
     assert_in_delta 0.661, trends[2014], 0.005
-
-    # => {2004 => 1.257, 2005 => 0.96, 2006 => 1.05, 2007 => 0.992, 2008 => 0.717, 2009 => 0.652, 2010 => 0.681, 2011 => 0.727, 2012 => 0.688, 2013 => 0.694, 2014 => 0.661 }
   end
+
+  def test_kindergarten_participation_against_high_school_graduation
+    assert_in_delta 0.548, @ha.kindergarten_participation_against_high_school_graduation('MONTROSE COUNTY RE-1J'), 0.005
+  end
+
+
 end

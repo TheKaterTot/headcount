@@ -10,23 +10,18 @@ class Enrollment_Repo_Test < Minitest::Test
     assert_equal EnrollmentRepository, @er.class
   end
 
-  def test_repo_loads_file
-
-    contents = @er.load_file("test/fixtures/kindergarten_sample.csv")
-
-    assert contents.shift
-  end
-
   def test_loads_data
-
     @er.load_data({
       :enrollment => {
-        :kindergarten => "test/fixtures/kindergarten_sample.csv"
+        :kindergarten => "test/fixtures/kindergarten_sample.csv",
+        :high_school_graduation => "test/fixtures/high_school_graduation_rates.csv"
       }
       })
     enrollment_1 = @er.find_by_name("ACADEMY 20")
+    enrollment_2 = @er.find_by_name("AGATE 300")
 
     assert_equal "ACADEMY 20", enrollment_1.name
+    assert_equal "AGATE 300", enrollment_2.name
   end
 
   def test_find_by_name_is_case_insensitive
