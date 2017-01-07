@@ -20,7 +20,7 @@ class DistrictRepository
     contents = load_file(district_data[:enrollment][:kindergarten])
     contents.each do |row|
       name = row[:location]
-      @districts[name] = District.new({:name => name, :enrollment => @er.find_by_name(name)})
+      @districts[name.upcase] = District.new({:name => name, :enrollment => @er.find_by_name(name)})
     end
   end
 
