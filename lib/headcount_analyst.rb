@@ -58,4 +58,36 @@ class HeadcountAnalyst
     (kindergarten_participation_rate_variation(name, options) /
     high_school_graduation_rate_variation(name, options))
   end
+
+  def statewide
+    @dr.districts.select do |name, district|
+      name != "COLORADO"
+    end
+  end
+
+  def correlation_results(district_names)
+    state_data = district_names.map do |name|
+        check_for_correlation(name)
+      end
+      total = state_data.length.to_f
+      results = state_data.count(true).to_f
+      results / total >= 0.70
+  end
+
+  def kindergarten_participation_correlates_with_high_school_graduation(options)
+    if options[:for] == "STATEWIDE"
+      correlation_results(statewide.keys)
+    elsif options.has_key?(:across)
+      correlation_results(options[:across])
+    else
+      check_for_correlation(options[:for])
+    end
+  end
+
+  def check_for_correlation(name)
+    kindergarten_participation_against_high_school_graduation(name) >= 0.6 &&
+    kindergarten_participation_against_high_school_graduation(name) <= 1.5
+  end
+
+
 end
