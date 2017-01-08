@@ -38,7 +38,24 @@ class HeadcountAnalystTest < Minitest::Test
 
   def test_kindergarten_participation_against_high_school_graduation
     assert_in_delta 0.548, @ha.kindergarten_participation_against_high_school_graduation('MONTROSE COUNTY RE-1J'), 0.005
+    assert_in_delta 0.800, @ha.kindergarten_participation_against_high_school_graduation('STEAMBOAT SPRINGS RE-2'), 0.005
   end
 
+  def test_grade_graduation_correlation
+    refute @ha.kindergarten_participation_correlates_with_high_school_graduation(for: 'MONTROSE COUNTY RE-1J')
+    assert @ha.kindergarten_participation_correlates_with_high_school_graduation(for: 'ACADEMY 20')
+  end
+
+  def test_statewide_correlation
+    refute @ha.kindergarten_participation_correlates_with_high_school_graduation(:for => 'STATEWIDE')
+  end
+
+  def test_district_correlation
+    districts = ["ACADEMY 20", 'PARK (ESTES PARK) R-3', 'YUMA SCHOOL DISTRICT 1']
+    assert @ha.kindergarten_participation_correlates_with_high_school_graduation(:across => districts)
+
+  #   assert @ha.kindergarten_participation_correlates_with_high_school_graduation(
+  # :across => ['district_1', 'district_2', 'district_3', 'district_4'])
+  end
 
 end
