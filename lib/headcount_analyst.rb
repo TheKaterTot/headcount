@@ -19,24 +19,75 @@ class HeadcountAnalyst
     find_district_data_average(name_2[:against])))
   end
 
+  def high_school_graduation_rate_variation(name_1, name_2)
+    truncates_float((find_high_school_district_data_average(name_1) /
+    find_high_school_district_data_average(name_2[:against])))
+  end
+
   def kindergarten_participation_rate_variation_trend(name_1, name_2)
     data_1 = find_district_data(name_1)
     data_2 = find_district_data(name_2[:against])
-    trends = {}
-    data_1.each do |key, value|
-      trends[key] = truncates_float(data_1[key] / data_2[key])
+    data_1.reduce({}) do |memo, (key, value)|
+      memo[key] = truncates_float(data_1[key] / data_2[key])
+      memo
     end
-    trends
   end
 
   def find_district_data_average(name)
     average(find_district_data(name).values)
   end
 
+  def find_high_school_district_data_average(name)
+    average(find_high_school_district_data(name).values)
+  end
+
   def find_district_data(name)
+    find_enrollment(name).kindergarten_participation_by_year
+  end
+
+  def find_high_school_district_data(name)
+    find_enrollment(name).graduation_rate_by_year
+  end
+
+  def find_enrollment(name)
     district = @dr.find_by_name(name)
     enrollment = district.enrollment
-    district_numbers = enrollment.kindergarten_participation_by_year
   end
+
+  def kindergarten_participation_against_high_school_graduation(name, options={against: "COLORADO"})
+    (kindergarten_participation_rate_variation(name, options) /
+    high_school_graduation_rate_variation(name, options))
+  end
+
+  def statewide
+    @dr.districts.select do |name, district|
+      name != "COLORADO"
+    end
+  end
+
+  def correlation_results(district_names)
+    state_data = district_names.map do |name|
+        check_for_correlation(name)
+      end
+      total = state_data.length.to_f
+      results = state_data.count(true).to_f
+      results / total >= 0.70
+  end
+
+  def kindergarten_participation_correlates_with_high_school_graduation(options)
+    if options[:for] == "STATEWIDE"
+      correlation_results(statewide.keys)
+    elsif options.has_key?(:across)
+      correlation_results(options[:across])
+    else
+      check_for_correlation(options[:for])
+    end
+  end
+
+  def check_for_correlation(name)
+    kindergarten_participation_against_high_school_graduation(name) >= 0.6 &&
+    kindergarten_participation_against_high_school_graduation(name) <= 1.5
+  end
+
 
 end
