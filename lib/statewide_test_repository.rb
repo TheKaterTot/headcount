@@ -18,7 +18,9 @@ class StatewideTestRepository
   end
 
   def load_data(district_data)
-    load_file(district_data[:statewide_testing])
+    if district_data.has_key?(:statewide_testing)
+      load_file(district_data[:statewide_testing])
+    end
   end
 
 

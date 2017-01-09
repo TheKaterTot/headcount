@@ -71,4 +71,32 @@ class StatewideTestTest < Minitest::Test
           testing.proficient_by_race_or_ethnicity(:pizza).class
       end
   end
+
+  def test_proficient_by_grade_in_year
+    testing = @str.find_by_name("ACADEMY 20")
+    assert_equal 0.857, testing.proficient_for_subject_by_grade_in_year(:math, 3, 2008)
+    assert_raises(UnknownDataError) do
+      testing.proficient_for_subject_by_grade_in_year(:math, 4, 2008)
+    end
+    assert_raises(UnknownDataError) do
+      testing.proficient_for_subject_by_grade_in_year(:unicorns, 3, 2008)
+    end
+    assert_raises(UnknownDataError) do
+      testing.proficient_for_subject_by_grade_in_year(:math, 3, 3001)
+    end
+  end
+
+  def test_proficient_by_race_in_year
+    testing = @str.find_by_name("ACADEMY 20")
+    assert_equal 0.855, testing.proficient_for_subject_by_race_in_year(:reading, :asian, 2014)
+    assert_raises(UnknownRaceError) do
+      testing.proficient_for_subject_by_race_in_year(:math, :people, 2008)
+    end
+    assert_raises(UnknownDataError) do
+      testing.proficient_for_subject_by_grade_in_year(:unicorns, :white, 2008)
+    end
+    assert_raises(UnknownDataError) do
+      testing.proficient_for_subject_by_grade_in_year(:math, :hispanic, 3001)
+    end
+  end
 end

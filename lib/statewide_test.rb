@@ -66,7 +66,6 @@ class StatewideTest
     end
 
     def proficient_by_race_or_ethnicity(race)
-      #require "pry"; binding.pry
       if check_race_validity(race)
         @attributes.reduce({}) do |memo, (name, files)|
           if ![:name, :third_grade, :eighth_grade].include?(name)
@@ -84,6 +83,26 @@ class StatewideTest
         end
       else
         raise UnknownRaceError
+      end
+    end
+
+    def proficient_for_subject_by_grade_in_year(subject, grade_level, year)
+      if !proficient_by_grade(grade_level).has_key?(year)
+        raise UnknownDataError
+      elsif !proficient_by_grade(grade_level)[year].has_key?(subject)
+        raise UnknownDataError
+      else
+        proficient_by_grade(grade_level)[year][subject]
+      end
+    end
+
+    def proficient_for_subject_by_race_in_year(subject, race, year)
+      if !proficient_by_race_or_ethnicity(race).has_key?(year)
+        raise UnknownDataError
+      elsif !proficient_by_race_or_ethnicity(race)[year].has_key?(subject)
+        raise UnknownDataError
+      else
+        proficient_by_race_or_ethnicity(race)[year][subject]
       end
     end
 
