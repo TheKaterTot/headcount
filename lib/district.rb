@@ -12,4 +12,9 @@ attr_reader :name
     @attributes[:enrollment]
   end
 
+  def statewide_test
+    #require "pry"; binding.pry
+    @attributes[:statewide_tests]
+  end
+
 end
