@@ -54,7 +54,8 @@ class HeadcountAnalyst
     enrollment = district.enrollment
   end
 
-  def kindergarten_participation_against_high_school_graduation(name, options={against: "COLORADO"})
+  def kindergarten_participation_against_high_school_graduation(
+                                        name, options={against: "COLORADO"})
     (kindergarten_participation_rate_variation(name, options) /
     high_school_graduation_rate_variation(name, options))
   end

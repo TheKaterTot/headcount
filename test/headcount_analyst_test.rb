@@ -1,6 +1,6 @@
 require_relative "test_helper"
 require_relative "../../headcount/lib/district_repository"
-require "./lib/headcount_analyst"
+require_relative "../../headcount/lib/headcount_analyst"
 
 class HeadcountAnalystTest < Minitest::Test
 
@@ -25,7 +25,7 @@ class HeadcountAnalystTest < Minitest::Test
   end
 
   def test_kindergarten_variation_rates
-    assert_equal 0.766, @ha.kindergarten_participation_rate_variation('ACADEMY 20', :against => 'COLORADO')
+    assert_equal 0.768, @ha.kindergarten_participation_rate_variation('ACADEMY 20', :against => 'COLORADO')
     assert_in_delta 0.447, @ha.kindergarten_participation_rate_variation('ACADEMY 20', :against => 'YUMA SCHOOL DISTRICT 1'), 0.005
   end
 

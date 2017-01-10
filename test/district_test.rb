@@ -1,5 +1,5 @@
 require_relative "test_helper"
-require "./lib/district"
+require_relative "../../headcount/lib/district"
 
 class DistrictTest < Minitest::Test
 

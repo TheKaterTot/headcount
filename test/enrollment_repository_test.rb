@@ -1,5 +1,5 @@
 require_relative "test_helper"
-require "./lib/enrollment_repository"
+require_relative "../../headcount/lib/enrollment_repository"
 
 class Enrollment_Repo_Test < Minitest::Test
   def setup
