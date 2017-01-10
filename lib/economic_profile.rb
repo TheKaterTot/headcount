@@ -6,23 +6,25 @@ class EconomicProfile
   attr_reader :name
 
   def initialize(attributes)
-    @attributes = attributes
-    @attributes[:name] ||= ""
+    @attributes = {
+      name: "",
+      median_household_income: {},
+      children_in_poverty: {},
+      free_or_reduced_price_lunch: {},
+      title_i: {}
+    }.merge(attributes)
     @name = @attributes[:name].upcase
-    @attributes[:median_household_income] ||= {}
-    @attributes[:children_in_poverty] ||= {}
-    @attributes[:free_or_reduced_price_lunch] ||= {}
-    @attributes[:title_i] ||= {}
   end
 
   def add_lunch_data(year, data, additional_info, data_format)
-    if !@attributes[:free_or_reduced_price_lunch].has_key?(year)
-      @attributes[:free_or_reduced_price_lunch][year] = {}
+    free_lunch = :free_or_reduced_price_lunch
+    if !@attributes[free_lunch].has_key?(year)
+      @attributes[free_lunch][year] = {}
     end
-    if !@attributes[:free_or_reduced_price_lunch][year].has_key?(additional_info)
-      @attributes[:free_or_reduced_price_lunch][year][additional_info] = {}
+    if !@attributes[free_lunch][year].has_key?(additional_info)
+      @attributes[free_lunch][year][additional_info] = {}
     end
-    @attributes[:free_or_reduced_price_lunch][year][additional_info][data_format] = data
+    @attributes[free_lunch][year][additional_info][data_format] = data
   end
 
   def add_data(year, data, file_type)
@@ -51,10 +53,8 @@ class EconomicProfile
     count = 0
     clean_data = sanitize_hash_with_array(@attributes[:median_household_income])
     clean_data.reduce(0) do |total, (years, income)|
-      total += income
       count += 1
-      total = total/count
-      total
+      (total + income)/count
     end
   end
 
