@@ -6,13 +6,14 @@ class StatewideTest
   attr_reader :name
 
   def initialize(attributes)
-    @attributes = attributes
     @name = attributes[:name].upcase
-    @attributes[:third_grade] ||= {}
-    @attributes[:eighth_grade] ||= {}
-    @attributes[:reading] ||= {}
-    @attributes[:writing] ||= {}
-    @attributes[:math] ||= {}
+    @attributes = {
+      third_grade: {},
+      eighth_grade: {},
+      reading: {},
+      writing: {},
+      math: {}
+    }.merge(attributes)
   end
 
   def add_third_grade(subject, year, data)

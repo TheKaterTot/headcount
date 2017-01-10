@@ -9,10 +9,11 @@ class StatewideTestRepository
 
   def load_file(data)
     data.each do |key, file|
+      csv = CSV.open(file, headers: true, header_converters: :symbol)
       if [:third_grade, :eighth_grade].include?(key)
-        extract_data_grades(CSV.open(file, headers: true, header_converters: :symbol), key)
+        extract_data_grades(csv, key)
       else
-        extract_data_subjects(CSV.open(file, headers: true, header_converters: :symbol), key)
+        extract_data_subjects(csv, key)
       end
     end
   end
@@ -48,20 +49,21 @@ class StatewideTestRepository
      @statewide_tests[name.upcase]
   end
 
-  def creates_enrollments(name, file_type, additional_info, year, data)
+  def creates_enrollments(name, file_type, info, year, data)
     if !@statewide_tests.has_key?(name.upcase)
       @statewide_tests[name.upcase] = StatewideTest.new({:name => name})
     end
+    statewide_test = @statewide_tests[name.upcase]
     if file_type == :third_grade
-      @statewide_tests[name.upcase].add_third_grade(additional_info, year, data)
+      statewide_test.add_third_grade(info, year, data)
     elsif file_type == :eighth_grade
-      @statewide_tests[name.upcase].add_eighth_grade(additional_info, year, data)
+      statewide_test.add_eighth_grade(info, year, data)
     elsif file_type == :math
-      @statewide_tests[name.upcase].add_math_data_for_race(additional_info, year, data)
+      statewide_test.add_math_data_for_race(info, year, data)
     elsif file_type == :writing
-      @statewide_tests[name.upcase].add_writing_data_for_race(additional_info, year, data)
+      statewide_test.add_writing_data_for_race(info, year, data)
     else
-      @statewide_tests[name.upcase].add_reading_data_for_race(additional_info, year, data)
+      statewide_test.add_reading_data_for_race(info, year, data)
     end
   end
 end

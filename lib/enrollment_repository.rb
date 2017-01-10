@@ -10,14 +10,14 @@ attr_reader :enrollments
 
   def load_file(data)
     data.each do |key, file|
-      extract_data(CSV.open(file, headers: true, header_converters: :symbol), key)
+      csv = CSV.open(file, headers: true, header_converters: :symbol)
+      extract_data(csv, key)
     end
   end
 
   def load_data(district_data)
     load_file(district_data[:enrollment])
   end
-
 
   def extract_data(data, grade_level)
     data.each do |row|

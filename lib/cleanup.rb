@@ -24,10 +24,7 @@ module Cleanup
   def sanitize_hash_with_array(data)
     clean_data = {}
     data.map do |key, value|
-      clean_data[key.reduce([]) do |memo, year|
-        memo << year.to_i
-        memo
-      end] = value.to_i
+      clean_data[key.map(&:to_i)] = value.to_i
     end
     clean_data
   end

@@ -28,7 +28,8 @@ class DistrictRepository
     contents.each do |row|
       name = row[:location]
       @districts[name.upcase] = District.new(
-                          {:name => name, :enrollment => @er.find_by_name(name),
+                          {:name => name,
+                           :enrollment => @er.find_by_name(name),
                            :statewide_tests => @str.find_by_name(name),
                            :economic_profile => @epr.find_by_name(name)})
     end
@@ -42,9 +43,4 @@ class DistrictRepository
   def find_all_matching(fragment)
     @districts.select {|key, value| key.include?(fragment.upcase)}
   end
-
-  # def statewide_test
-  #
-  # end
-
 end
