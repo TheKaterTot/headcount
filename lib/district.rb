@@ -13,8 +13,10 @@ attr_reader :name
   end
 
   def statewide_test
-    #require "pry"; binding.pry
     @attributes[:statewide_tests]
   end
 
+  def economic_profile
+    @attributes[:economic_profile]
+  end
 end

@@ -2,6 +2,7 @@ require "csv"
 require_relative "district"
 require_relative "enrollment_repository"
 require_relative "statewide_test_repository"
+require_relative "economic_profile_repository"
 
 
 class DistrictRepository
@@ -12,6 +13,7 @@ class DistrictRepository
     @statewide_tests = {}
     @er = EnrollmentRepository.new
     @str = StatewideTestRepository.new
+    @epr = EconomicProfileRepository.new
   end
 
   def load_file(data)
@@ -21,12 +23,14 @@ class DistrictRepository
   def load_data(district_data)
     @er.load_data(district_data)
     @str.load_data(district_data)
+    @epr.load_data(district_data)
     contents = load_file(district_data[:enrollment][:kindergarten])
     contents.each do |row|
       name = row[:location]
-      @districts[name.upcase] = District.new({:name => name, :enrollment => @er.find_by_name(name),
-                                              :statewide_tests => @str.find_by_name(name)})
-      #@statewide_tests[name.upcase] = StatewideTest.new({:name => name, :statewide_testing => @str.find_by_name(name)})
+      @districts[name.upcase] = District.new(
+                          {:name => name, :enrollment => @er.find_by_name(name),
+                           :statewide_tests => @str.find_by_name(name),
+                           :economic_profile => @epr.find_by_name(name)})
     end
   end
 

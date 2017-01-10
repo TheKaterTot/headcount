@@ -1,5 +1,5 @@
 require_relative "test_helper"
-require "./lib/enrollment"
+require_relative "../../headcount/lib/enrollment"
 
 class DistrictTest < Minitest::Test
 
@@ -10,17 +10,17 @@ class DistrictTest < Minitest::Test
 
   def test_kindergarten_participation_by_year
     e = Enrollment.new({:name => "Academy 20", :kindergarten_participation => {"2010" => "0.1345"}} )
-    assert_equal({2010 => 0.134}, e.kindergarten_participation_by_year)
+    assert_equal({2010 => 0.135}, e.kindergarten_participation_by_year)
   end
 
   def test_kindergarten_participation_by_year_with_multiple_years
     e = Enrollment.new({:name => "Academy 20", :kindergarten_participation => {"2010" => "0.1345", "2011" => "0.34567"}})
-    assert_equal({2010 => 0.134, 2011 => 0.345}, e.kindergarten_participation_by_year)
+    assert_equal({2010 => 0.135, 2011 => 0.346}, e.kindergarten_participation_by_year)
   end
 
   def test_kindergarten_participation_in_year
     e = Enrollment.new({:name => "Academy 20", :kindergarten_participation => {"2010" => "0.1345", "2011" => "0.34567"}})
-    assert_equal 0.134, e.kindergarten_participation_in_year(2010)
+    assert_equal 0.135, e.kindergarten_participation_in_year(2010)
   end
 
   def test_kindergarten_participation_in_year_returns_nil

@@ -1,5 +1,5 @@
-require_relative "../../headcount/lib/cleanup"
-require_relative "../../headcount/lib/errors"
+require_relative "cleanup"
+require_relative "errors"
 
 class StatewideTest
   include Cleanup
@@ -96,13 +96,17 @@ class StatewideTest
       end
     end
 
+    def valid_subject_race_year?(subject, race, year)
+      check_race_validity(race) &&
+      proficient_by_race_or_ethnicity(race).has_key?(year) &&
+      proficient_by_race_or_ethnicity(race)[year].has_key?(subject)
+    end
+
     def proficient_for_subject_by_race_in_year(subject, race, year)
-      if !proficient_by_race_or_ethnicity(race).has_key?(year)
-        raise UnknownDataError
-      elsif !proficient_by_race_or_ethnicity(race)[year].has_key?(subject)
-        raise UnknownDataError
+      if valid_subject_race_year?(subject, race, year)
+          proficient_by_race_or_ethnicity(race)[year][subject]
       else
-        proficient_by_race_or_ethnicity(race)[year][subject]
+        raise UnknownDataError
       end
     end
 

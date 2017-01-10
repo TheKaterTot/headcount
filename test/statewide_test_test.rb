@@ -1,5 +1,5 @@
 require_relative "test_helper"
-require "./lib/statewide_test"
+require_relative "../../headcount/lib/statewide_test"
 require_relative "../../headcount/lib/statewide_test_repository"
 
 class StatewideTestTest < Minitest::Test
@@ -89,7 +89,7 @@ class StatewideTestTest < Minitest::Test
   def test_proficient_by_race_in_year
     testing = @str.find_by_name("ACADEMY 20")
     assert_equal 0.855, testing.proficient_for_subject_by_race_in_year(:reading, :asian, 2014)
-    assert_raises(UnknownRaceError) do
+    assert_raises(UnknownDataError) do
       testing.proficient_for_subject_by_race_in_year(:math, :people, 2008)
     end
     assert_raises(UnknownDataError) do

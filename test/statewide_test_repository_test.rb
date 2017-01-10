@@ -1,5 +1,5 @@
 require_relative "test_helper"
-require "./lib/statewide_test_repository"
+require_relative "../../headcount/lib/statewide_test_repository"
 
 class StatewideTestRepositoryTest < Minitest::Test
   def setup
