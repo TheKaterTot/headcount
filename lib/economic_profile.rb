@@ -36,26 +36,20 @@ class EconomicProfile
     if !clean_data.keys.flatten.include?(year)
       raise UnknownDataError
     end
+    find_average(clean_data.select { |years, income| years.include?(year) })
+  end
+
+  def find_average(data)
     count = 0
-    clean_data.reduce(0) do |total, (years, income)|
-      if years.include?(year)
-        total += income
-        count += 1
-      end
-      if !count.zero?
-        total = total/count
-      end
-      total
+    data.reduce(0) do |total, (years, income)|
+      count += 1
+      (total + income)/count
     end
   end
 
   def median_household_income_average
-    count = 0
     clean_data = sanitize_hash_with_array(@attributes[:median_household_income])
-    clean_data.reduce(0) do |total, (years, income)|
-      count += 1
-      (total + income)/count
-    end
+    find_average(clean_data)
   end
 
   def children_in_poverty_in_year(year)
