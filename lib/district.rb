@@ -1,7 +1,7 @@
 require_relative "district_repository"
 
 class District
-attr_reader :name
+attr_reader :name, :attributes
 
   def initialize(attributes)
     @attributes = attributes

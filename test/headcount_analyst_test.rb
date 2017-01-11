@@ -10,6 +10,13 @@ class HeadcountAnalystTest < Minitest::Test
       :enrollment => {
         :kindergarten => "./data/Kindergartners in full-day program.csv",
         :high_school_graduation => "./data/High school graduation rates.csv"
+      },
+      :statewide_testing => {
+      :third_grade => "./data/3rd grade students scoring proficient or above on the CSAP_TCAP.csv",
+      :eighth_grade => "./data/8th grade students scoring proficient or above on the CSAP_TCAP.csv",
+      :math => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Math.csv",
+      :reading => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Reading.csv",
+      :writing => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Writing.csv"
       }
       })
     @ha = HeadcountAnalyst.new(@dr)
@@ -53,9 +60,23 @@ class HeadcountAnalystTest < Minitest::Test
   def test_district_correlation
     districts = ["ACADEMY 20", 'PARK (ESTES PARK) R-3', 'YUMA SCHOOL DISTRICT 1']
     assert @ha.kindergarten_participation_correlates_with_high_school_graduation(:across => districts)
+  end
 
-  #   assert @ha.kindergarten_participation_correlates_with_high_school_graduation(
-  # :across => ['district_1', 'district_2', 'district_3', 'district_4'])
+  def test_raises_insufficient_error
+    assert_raises(InsufficientInformationError) do
+
+    @ha.top_statewide_year_over_year_growth(subject: :math)
+   end
+  end
+
+  def test_raises_unknown_error
+    assert_raises(UnknownDataError) do
+      @ha.top_statewide_year_over_year_growth(grade: "9")
+    end
+  end
+
+  def test_statewide_returns_top_district
+    assert_equal "SANGRE DE CRISTO RE-22J", @ha.top_statewide_year_over_year_growth(grade: 3).first
   end
 
 end

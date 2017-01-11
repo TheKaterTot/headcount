@@ -1,5 +1,6 @@
-require_relative '../../headcount/lib/district_repository'
-require_relative '../../headcount/lib/cleanup'
+require_relative 'district_repository'
+require_relative 'cleanup'
+require_relative 'errors'
 
 class HeadcountAnalyst
   include Cleanup
@@ -88,6 +89,66 @@ class HeadcountAnalyst
   def check_for_correlation(name)
     kindergarten_participation_against_high_school_graduation(name) >= 0.6 &&
     kindergarten_participation_against_high_school_graduation(name) <= 1.5
+  end
+
+  def do_some_math(min, max)
+    min_year = min[1].reduce(0) do |memo, (key, value)|
+      if !value.is_a?(String)
+        memo += value
+      end
+      memo
+    end
+    max_year = max[1].reduce(0) do |memo, (key, value)|
+      if value.is_a?(Float)
+        memo += value
+      end
+      memo
+    end
+     x = ((max_year - min_year) / 3) / (max[0] - min[0])
+  end
+
+  def data_valid?(data)
+    results = data.map do |subject, percent|
+      #require "pry"; binding.pry
+        if percent.is_a?(String)
+          false
+        else
+          true
+        end
+      end
+    return false if results.include?(false)
+  end
+
+   def get_info(grade, subject)
+     results = {}
+     statewide.values.map do |district|
+       statewide_test = district.attributes[:statewide_tests]
+       info = {}
+       info[district.name] = statewide_test.attributes[:third_grade]
+       x = statewide_test.proficient_by_grade(grade)
+       y = x.delete_if do |year, data|
+        !data_valid?(data)
+      end
+      require "pry"; binding.pry
+      min = y.sort.first
+      max = y.sort.last
+      data = truncates_float(do_some_math(min, max))
+      results[district.name] = data
+     end
+     results.sort_by { |key, value| value }.reverse
+   end
+
+  def top_statewide_year_over_year_growth(grade: 0, subject: :default)
+    if grade == 0
+      raise InsufficientInformationError
+    end
+    grade = grade.to_i
+    if grade != 3 && grade != 8
+      raise UnknownDataError
+    end
+    if grade == 3
+      get_info(grade, subject)
+    end
   end
 
 

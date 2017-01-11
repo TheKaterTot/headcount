@@ -7,6 +7,14 @@ module Cleanup
     clean_data
   end
 
+  def sanitize_hash(data)
+    clean_data = {}
+    data.map do |key, value|
+      clean_data[key.to_sym] = truncates_float(value)
+    end
+    clean_data
+  end
+
   def sanitize_nested_hash(data)
     clean_data = {}
     data.map do |key, values|

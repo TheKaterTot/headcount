@@ -3,7 +3,7 @@ require_relative "errors"
 
 class StatewideTest
   include Cleanup
-  attr_reader :name
+  attr_reader :name, :attributes
 
   def initialize(attributes)
     @name = attributes[:name].upcase
