@@ -10,6 +10,13 @@ class HeadcountAnalystTest < Minitest::Test
       :enrollment => {
         :kindergarten => "./data/Kindergartners in full-day program.csv",
         :high_school_graduation => "./data/High school graduation rates.csv"
+      },
+      :statewide_testing => {
+      :third_grade => "./data/3rd grade students scoring proficient or above on the CSAP_TCAP.csv",
+      :eighth_grade => "./data/8th grade students scoring proficient or above on the CSAP_TCAP.csv",
+      :math => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Math.csv",
+      :reading => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Reading.csv",
+      :writing => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Writing.csv"
       }
       })
     @ha = HeadcountAnalyst.new(@dr)
@@ -53,9 +60,44 @@ class HeadcountAnalystTest < Minitest::Test
   def test_district_correlation
     districts = ["ACADEMY 20", 'PARK (ESTES PARK) R-3', 'YUMA SCHOOL DISTRICT 1']
     assert @ha.kindergarten_participation_correlates_with_high_school_graduation(:across => districts)
-
-  #   assert @ha.kindergarten_participation_correlates_with_high_school_graduation(
-  # :across => ['district_1', 'district_2', 'district_3', 'district_4'])
   end
 
+  def test_raises_insufficient_error
+    assert_raises(InsufficientInformationError) do
+
+    @ha.top_statewide_test_year_over_year_growth(subject: :math)
+   end
+  end
+
+  def test_raises_unknown_error
+    assert_raises(UnknownDataError) do
+      @ha.top_statewide_test_year_over_year_growth(grade: "9")
+    end
+  end
+
+  def test_statewide_returns_top_district_for_grade
+    #assert_equal "SANGRE DE CRISTO RE-22J", @ha.top_statewide_test_year_over_year_growth(grade: 3).first
+    assert_equal "OURAY R-1", @ha.top_statewide_test_year_over_year_growth(grade: 8).first
+    assert_in_delta 0.11, @ha.top_statewide_test_year_over_year_growth(grade: 8).last, 0.005
+  end
+
+  def test_statewide_returns_top_district_for_subject
+    assert_equal "WILEY RE-13 JT", @ha.top_statewide_test_year_over_year_growth(grade: 3, subject: :math).first
+    assert_in_delta 0.3, @ha.top_statewide_test_year_over_year_growth(grade: 3, subject: :math).last, 0.005
+    assert_equal "COTOPAXI RE-3", @ha.top_statewide_test_year_over_year_growth(grade: 8, subject: :reading).first
+    assert_in_delta 0.13, @ha.top_statewide_test_year_over_year_growth(grade: 8, subject: :reading).last, 0.005
+
+    assert_equal "BETHUNE R-5", @ha.top_statewide_test_year_over_year_growth(grade: 3, subject: :writing).first
+    assert_in_delta 0.148, @ha.top_statewide_test_year_over_year_growth(grade: 3, subject: :writing).last, 0.005
+  end
+
+  def test_returns_specific_number_of_results
+    assert_equal "WILEY RE-13 JT", @ha.top_statewide_test_year_over_year_growth(grade: 3, top: 3, subject: :math).first.first
+  end
+
+  def test_returns_weighted_results
+    top_performer = @ha.top_statewide_test_year_over_year_growth(grade: 8, :weighting => {:math => 0.5, :reading => 0.5, :writing => 0.0})
+    assert_equal "OURAY R-1", top_performer.first
+    assert_in_delta 0.153, top_performer.last, 0.005
+  end
 end
