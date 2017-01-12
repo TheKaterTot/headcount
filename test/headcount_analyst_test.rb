@@ -76,7 +76,7 @@ class HeadcountAnalystTest < Minitest::Test
   end
 
   def test_statewide_returns_top_district_for_grade
-    #assert_equal "SANGRE DE CRISTO RE-22J", @ha.top_statewide_test_year_over_year_growth(grade: 3).first
+    assert_equal "SANGRE DE CRISTO RE-22J", @ha.top_statewide_test_year_over_year_growth(grade: 3).first
     assert_equal "OURAY R-1", @ha.top_statewide_test_year_over_year_growth(grade: 8).first
     assert_in_delta 0.11, @ha.top_statewide_test_year_over_year_growth(grade: 8).last, 0.005
   end
