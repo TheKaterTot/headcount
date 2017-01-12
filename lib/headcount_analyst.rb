@@ -97,27 +97,6 @@ class HeadcountAnalyst
     ((max_year - min_year) / number_of_subjects) / (max[0] - min[0])
   end
 
-  def math_weight(weighting, math)
-     math.reduce({}) do |memo, (name, data)|
-       memo[name] = (weighting[:math] * data)
-       memo
-     end
-   end
-
-   def reading_weight(weighting, reading)
-     reading.reduce({}) do |memo, (name, data)|
-       memo[name] = (weighting[:reading] * data)
-       memo
-     end
-   end
-
-   def writing_weight(weighting, writing)
-     writing.reduce({}) do |memo, (name, data)|
-       memo[name] = (weighting[:writing] * data)
-       memo
-     end
-  end
-
   def weight(weighting, proficiency, subject)
     proficiency.reduce({}) do |memo, (name, data)|
       memo[name] = (weighting[subject] * data)
@@ -143,47 +122,40 @@ class HeadcountAnalyst
   end
 
   def data_valid?(data)
-    results = data.all? do |subject, percent|
+    data.all? do |subject, percent|
       !percent.is_a?(String)
     end
   end
 
   def get_info(grade)
-    results = {}
-    statewide.values.each do |district|
+    statewide.values.reduce({}) do |results, district|
       grade_data = district.statewide_test.proficient_by_grade(grade)
-      grade_data = grade_data.delete_if do |year, data|
-        !data_valid?(data)
-      end
+      grade_data.reject! { |year, data| !data_valid?(data) }
       if grade_data.keys.count > 1
         min = grade_data.sort.first
         max = grade_data.sort.last
         data = truncates_float(do_some_math(min, max, 3.0))
         results[district.name] = data
       end
-    end
-    results.sort_by { |key, value| value }.reverse
+      results
+    end.sort_by { |key, value| value }.reverse
   end
 
   def get_subject_info(grade, subject)
-    results = {}
-    statewide.values.each do |district|
+    statewide.values.reduce({}) do |results, district|
       grade_data = district.statewide_test.proficient_by_grade(grade)
       subject_data = grade_data.reduce({}) do |memo, (year, data)|
-        memo[year] = {subject => data[subject]}
-        memo
+        memo.merge({year => { subject => data[subject] }})
       end
-      subject_data = subject_data.delete_if do |year, data|
-        !data_valid?(data)
-      end
+      subject_data.reject! { |year, data| !data_valid?(data) }
       if subject_data.keys.count > 1
         min = subject_data.sort.first
         max = subject_data.sort.last
         data = truncates_float(do_some_math(min, max, 1.0))
         results[district.name] = data
       end
-    end
-    results.sort_by { |key, value| value }.reverse
+      results
+    end.sort_by { |key, value| value }.reverse
   end
 
   def top_statewide_test_year_over_year_growth(
@@ -204,7 +176,12 @@ class HeadcountAnalyst
         get_subject_info(grade, subject).slice(0...top)
       end
     else
-      combine_weights(grade, weighting).first
+      weight = weighting.reduce(0) {|memo, (key, value)| value + memo }
+      if weight == 1
+        combine_weights(grade, weighting).first
+      else
+        raise WeightError
+      end
     end
   end
 end
